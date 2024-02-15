@@ -3,6 +3,12 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 
 # Create your models here.
+class PublishedManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset()\
+                    .filter(status=Post.Status.PUBLISHED)
+
+
 class Post(models.Model):
 
     # Status field
@@ -20,6 +26,10 @@ class Post(models.Model):
     updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=2, choices=Status.choices, default=Status.DRAFT)
 
+    # default manager
+    objects = models.Manager()
+    # custom manager
+    published = PublishedManager()
 
     # class to sorted Post
     # this class define metadata for the model
